@@ -144,7 +144,7 @@ long LinuxParser::StartTimeJiffies(int pid) {
     cstream << filestream.rdbuf();
     string s = cstream.str();
     std::istringstream fstr(s);
-    for(int i=0;i<=22;++i){ 
+    for(int i=0;i<=21;++i){ 
       fstr>>value; 
       if(i==21) startTime += std::stol(value);
     } 

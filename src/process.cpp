@@ -11,31 +11,20 @@ using std::string;
 using std::to_string;
 using std::vector;
 
-void Process::setPID(int pid){
-	pid_ = pid;
-}
-
-void Process::setCommand(string c){
-   command_ = c;
-}
-
-void Process::setUser(string u){
-   user_ = u;
-}
-
-void Process::setRam(string r){
-	ram_ = r;
-}
-
-void Process::setUpTime(long ut){
-	uptime_ = ut;
-}
-
+/* constructor doesn't work
 Process(int pid){
    pid_ = pid;
-	command_ = LinuxParser::Command(pid_);
-	user_ = LinuxParser::User(pid_);
 }
+*/
+
+void Process::Init(int pid){
+	pid_ = pid;
+	command_ = LinuxParser::Command(pid_);
+	user_ = LinuxParser::User(pid_);  
+	CalcCpuUtilization();
+
+}
+
 
 void Process::setJiffies(long aj, long st, long ut){
 	activejiffies_ = aj;
@@ -49,11 +38,15 @@ int Process::Pid() { return pid_; }
 
 // TODO: Return this process's CPU utilization
 float Process::CpuUtilization() { 
+	return utilization_; 
+}
+
+void Process::CalcCpuUtilization() { 
 	activejiffies_ = LinuxParser::ActiveJiffies(pid_);
 	starttime_ = LinuxParser::StartTimeJiffies(pid_);
 	long upTimeSystem = LinuxParser::UpTime();
 	utilization_ = (activejiffies_/(float)sysconf(_SC_CLK_TCK))/(upTimeSystem-starttime_/(float)sysconf(_SC_CLK_TCK))*100;
-	return utilization_; 
+	//return utilization_; 
 }
 
 // TODO: Return the command that generated this process
@@ -66,8 +59,18 @@ string Process::Ram() { return LinuxParser::Ram(pid_); }
 string Process::User() { return user_; }
 
 // TODO: Return the age of this process (in seconds)
-long int Process::UpTime() { return LinuxParser::UpTime(pid_); }
+long int Process::UpTime() { 
+	return  LinuxParser::UpTime() - LinuxParser::UpTime(pid_); 
+}
 
 // TODO: Overload the "less than" comparison operator for Process objects
 // REMOVE: [[maybe_unused]] once you define the function
-bool Process::operator<(Process const& a) const { return ram_<a.ram_; }
+bool Process::operator<(Process const& a) const { 
+	//return true;
+	return utilization_<a.utilization_; 
+}
+
+bool Process::operator>(Process const& a) const { 
+	//return true;
+	return utilization_>a.utilization_; 
+}

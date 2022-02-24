@@ -3,6 +3,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 #include "process.h"
 #include "processor.h"
@@ -22,18 +23,16 @@ Processor& System::Cpu() { return cpu_; }
 
 // TODO: Return a container composed of the system's processes
 vector<Process>& System::Processes() { 
+    processes_.clear();
+    processes_.resize(0);
     vector<int> pPids = LinuxParser::Pids();
     //vector<Process> pPids = LinuxParser::Pids();
     for(unsigned int i=0;i<pPids.size();++i){
-        Process p1(pPids[i]);
-        /*p1.setPID(pPids[i]);
-        p1.setCommand(LinuxParser::Command(pPids[i]));
-        p1.setUser(LinuxParser::User(pPids[i]));
-        p1.setRam(LinuxParser::Ram(pPids[i]));
-        p1.setUpTime(LinuxParser::UpTime(pPids[i]));
-        p1.setJiffies(LinuxParser::ActiveJiffies(pPids[i]), LinuxParser::StartTimeJiffies(pPids[i]), uptime_);*/
+        Process p1;
+        p1.Init(pPids[i]);
         processes_.push_back(p1);
     }
+    sortCPU(processes_);
     return processes_; 
 }
 
@@ -56,4 +55,12 @@ int System::TotalProcesses() { return LinuxParser::TotalProcesses(); }
 long int System::UpTime() { 
     uptime_ = LinuxParser::UpTime();
     return  uptime_;
+}
+
+bool System::cmp1(Process a, Process b){
+	return a.CpuUtilization()<b.CpuUtilization();
+}
+
+void System::sortCPU(vector<Process> p1){
+	sort(p1.begin(), p1.end(), cmp1);
 }
