@@ -17,8 +17,7 @@ class System {
   int RunningProcesses();             // TODO: See src/system.cpp
   std::string Kernel();               // TODO: See src/system.cpp
   std::string OperatingSystem();      // TODO: See src/system.cpp
-  static bool cmp1(Process a, Process b);
-  void sortCPU(vector<Process> p1);
+  void sortCPU();
 
   // TODO: Define any necessary private members
  private:
