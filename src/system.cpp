@@ -23,17 +23,17 @@ Processor& System::Cpu() { return cpu_; }
 
 // TODO: Return a container composed of the system's processes
 vector<Process>& System::Processes() { 
-    processes_.clear();
-    processes_.resize(0);
+    System::processes_.clear();
+    System::processes_.resize(0);
     vector<int> pPids = LinuxParser::Pids();
-    //vector<Process> pPids = LinuxParser::Pids();
-    for(unsigned int i=0;i<pPids.size();++i){
+    for(i:pPids){
         Process p1;
-        p1.Init(pPids[i]);
+        p1.Init(i);
         processes_.push_back(p1);
     }
-    sortCPU(processes_);
-    return processes_; 
+    
+    sortCPU();    
+    return System::processes_; 
 }
 
 // TODO: Return the system's kernel identifier (string)
@@ -57,10 +57,15 @@ long int System::UpTime() {
     return  uptime_;
 }
 
-bool System::cmp1(Process a, Process b){
-	return a.CpuUtilization()<b.CpuUtilization();
-}
-
-void System::sortCPU(vector<Process> p1){
-	sort(p1.begin(), p1.end(), cmp1);
+void System::sortCPU(){
+   Process ptemp;
+	for (unsigned int i=0;i<processes_.size();++i){
+    	for(unsigned int j=0;j<processes_.size();++j){
+        if (processes_[i]>processes_[j]) {
+        	ptemp = processes_[j];
+          processes_[j] = processes_[i];
+          processes_[i] = ptemp;
+        }
+      }
+    }
 }

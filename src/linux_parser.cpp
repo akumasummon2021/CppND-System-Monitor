@@ -196,12 +196,11 @@ long LinuxParser::IdleJiffies() {
 
 // TODO: Read and return CPU utilization
 vector<long> LinuxParser::CpuUtilization() { 
-  // if only CPU will be calculated, then the vector results has only one member
+  // if only one CPU will be calculated, then the vector results has only one member
+  // results[0] is "totald", results[1] is "idled"
   vector<long> results;
   results.push_back(LinuxParser::ActiveJiffies());
   results.push_back(LinuxParser::IdleJiffies());
-
-  //results.push_back(1-(ijNow-ijPre)/(float)(ajNow-ajPre));
 
   return results;
 }

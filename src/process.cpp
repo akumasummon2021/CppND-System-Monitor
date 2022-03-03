@@ -11,25 +11,18 @@ using std::string;
 using std::to_string;
 using std::vector;
 
-/* constructor doesn't work
-Process(int pid){
-   pid_ = pid;
-}
-*/
-
 void Process::Init(int pid){
 	pid_ = pid;
 	command_ = LinuxParser::Command(pid_);
 	user_ = LinuxParser::User(pid_);  
 	CalcCpuUtilization();
-
 }
 
 
 void Process::setJiffies(long aj, long st, long ut){
 	activejiffies_ = aj;
 	starttime_ = st;
-	utilization_ = (aj/(float)sysconf(_SC_CLK_TCK))/(ut-st/(float)sysconf(_SC_CLK_TCK))*100;
+	utilization_ = (aj/(float)sysconf(_SC_CLK_TCK))/(ut-st/(float)sysconf(_SC_CLK_TCK));
 }
 
 
@@ -45,8 +38,7 @@ void Process::CalcCpuUtilization() {
 	activejiffies_ = LinuxParser::ActiveJiffies(pid_);
 	starttime_ = LinuxParser::StartTimeJiffies(pid_);
 	long upTimeSystem = LinuxParser::UpTime();
-	utilization_ = (activejiffies_/(float)sysconf(_SC_CLK_TCK))/(upTimeSystem-starttime_/(float)sysconf(_SC_CLK_TCK))*100;
-	//return utilization_; 
+	utilization_ = (activejiffies_/(float)sysconf(_SC_CLK_TCK))/(upTimeSystem-starttime_/(float)sysconf(_SC_CLK_TCK));
 }
 
 // TODO: Return the command that generated this process
@@ -66,11 +58,9 @@ long int Process::UpTime() {
 // TODO: Overload the "less than" comparison operator for Process objects
 // REMOVE: [[maybe_unused]] once you define the function
 bool Process::operator<(Process const& a) const { 
-	//return true;
-	return utilization_<a.utilization_; 
+  return utilization_<a.utilization_; 
 }
 
 bool Process::operator>(Process const& a) const { 
-	//return true;
-	return utilization_>a.utilization_; 
+  return utilization_>a.utilization_; 
 }

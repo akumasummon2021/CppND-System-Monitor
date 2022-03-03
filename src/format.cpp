@@ -2,7 +2,6 @@
 
 #include "format.h"
 
-//必须加上下面这句，to_string才能用
 using namespace std;
 using std::string;
 
@@ -25,6 +24,5 @@ string Format::ElapsedTime(long seconds) {
     if (s<10) s_output += ":0" + to_string(s);
     else s_output += ":" + to_string(s);
 
-    //s_output = to_string(h) + ':' + to_string(m) + ':' + to_string(s);
     return s_output; 
 }
