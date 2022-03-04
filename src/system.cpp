@@ -26,7 +26,7 @@ vector<Process>& System::Processes() {
     System::processes_.clear();
     System::processes_.resize(0);
     vector<int> pPids = LinuxParser::Pids();
-    for(i:pPids){
+    for(auto i : pPids){
         Process p1;
         p1.Init(i);
         processes_.push_back(p1);
